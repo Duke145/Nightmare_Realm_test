@@ -1,11 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Drawer extends JComponent {
+public class Drawer_2 extends JPanel {
     public static final int cell_size = 5;
     public static final int header_height = 100; //размер блока сверху
     public static int[][] field = new int[cell_size][cell_size]; //массив поля
@@ -47,7 +46,7 @@ public class Drawer extends JComponent {
         }
     }
 
-    public Drawer() {
+    public Drawer_2() {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);//включает получение событий от мыши
     }
 
@@ -58,12 +57,12 @@ public class Drawer extends JComponent {
         Color tempColor;
         g.setColor(Color.BLACK);
 
-            for (int i = 0; i < cell_size; i++) {
-                g.drawLine(dw * i, 0, dw * i, header_height);
-                if (i % 2 == 0 && firstInit) {
-                    headerField.put(i,1);
-                }
+        for (int i = 0; i < cell_size; i++) {
+            g.drawLine(dw * i, 0, dw * i, header_height);
+            if (i % 2 == 0 && firstInit) {
+                headerField.put(i,1);
             }
+        }
 
 
         for(Map.Entry<Integer,Integer> elem : headerField.entrySet()) {
