@@ -8,7 +8,6 @@ public class Drawer_2 extends JPanel {
     public static final int cell_size = 5;
     public static final int header_height = 100; //размер блока сверху
     public static int[][] field = new int[cell_size][cell_size]; //массив поля
-    //public static ArrayList<Integer> headerField = new ArrayList<>();
     public static HashMap<Integer,Integer> headerField = new HashMap<>();
     private static boolean firstInit = true;
     @Override

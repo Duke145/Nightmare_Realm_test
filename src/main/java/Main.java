@@ -3,8 +3,8 @@ import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        int screen_width = 600;
-        int screen_height = 800;
+        int screen_width = 1200;
+        int screen_height = 775;
 
 
         System.out.println("запускаем игру");
@@ -21,7 +21,7 @@ public class Main {
         upPanel.setPreferredSize(new Dimension(screen_width,50));
         upPanel.setBackground(Color.lightGray); // фон светло-серый
         upPanel.setLayout(new FlowLayout());
-        //window.add(upPanel); // распологается вверху
+        window.add(upPanel); // распологается вверху
         JLabel statusLabel = new JLabel("TEST"); // Элемент, который будет показывать текст состояния программы
         upPanel.add(statusLabel,BorderLayout.CENTER);    // добавляем его в верхнюю панель
 
@@ -37,12 +37,12 @@ public class Main {
 
 
         Panel panel = new Panel(screen_width,screen_height-100);
-        panel.setPreferredSize(new Dimension(screen_width,screen_height-100));
-        //panel.setSize(screen_width,screen_height-100);
+        panel.setPreferredSize(new Dimension(Panel.getWIDTH(), Panel.getHEIGHT()));
+
         window.add(panel);
         panel.mainTimer.start();
-        //window.add(game);
         window.setVisible(true);//делает окно видимым
+        panel.requestFocus();//задает фокус на игровую панель
         System.out.println("закрываем игру");
     }
 }
