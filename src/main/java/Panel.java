@@ -11,31 +11,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Panel extends JPanel implements ActionListener{
-    public static int getCell_size() {
-        return cell_size;
-    }
 
     public static int getHeader_height() {
         return header_height;
     }
 
-    private static int cell_size = 5;
+    public static int cell_size = 5;
 
-    public static int[][] getField() {
-        return field;
-    }
 
     public static HashMap<Integer, Integer> getHeaderField() {
         return headerField;
     }
 
+    //public static Boolean await_cond = false;
+
     public static boolean isFirstInit() {
         return firstInit;
     }
 
-    public static STATES getState() {
-        return state;
-    }
+
 
     private static int header_height = 100; //размер блока сверху
     public static int[][] field = new int[cell_size][cell_size]; //массив поля
@@ -44,6 +38,38 @@ public class Panel extends JPanel implements ActionListener{
     private static boolean firstInit = true;
 
     public Timer mainTimer = new Timer(17,this); //главный таймер, вызывает метод actionPerformed каждые 30 миллисекунд
+
+    public enum STATES{MENU,PLAY,MOVE} //объявляем 2 состояния игры
+    public static STATES state = STATES.PLAY; //задает изначальное состояние - меню
+
+    public static int getWIDTH() {
+        return WIDTH;
+    }
+
+    public static int getHEIGHT() {
+        return HEIGHT;
+    }
+
+    //размер панели
+    private static int WIDTH;
+    private static int HEIGHT;
+
+    //координаты мышки
+    public static int mouseX;
+    public static int mouseY;
+
+    //координаты ходящей фишки
+    public static int actionX;
+    public static int actionY;
+
+    private BufferedImage image;
+    private Graphics2D g;
+
+    Back back = new Back();
+
+    Player player = Player.getInstance();
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -63,33 +89,18 @@ public class Panel extends JPanel implements ActionListener{
 
 
         }
+
+        if (state.equals(STATES.MOVE)) {
+            gameUpdate();
+            //gameRender(); //добавление фона в буфер картинок
+            back.draw(g);
+            drawGridMove(g,actionX,actionY);
+            initMoveBlock(g,actionX,actionY);
+            player.draw(g);
+            gameDraw(); // отрисовка всех элементов из буфера
+        }
+
     }
-
-    private enum STATES{MENU,PLAY} //объявляем 2 состояния игры
-    private static STATES state = STATES.PLAY; //задает изначальное состояние - меню
-
-    public static int getWIDTH() {
-        return WIDTH;
-    }
-
-    public static int getHEIGHT() {
-        return HEIGHT;
-    }
-
-    //размер панели
-    private static int WIDTH;
-    private static int HEIGHT;
-
-    //координаты мышки
-    public static int mouseX;
-    public static int mouseY;
-
-    private BufferedImage image;
-    private Graphics2D g;
-
-    Back back = new Back();
-
-    Player player = Player.getInstance();
 
 
     public Panel(int WIDTH, int HEIGHT) {
@@ -191,6 +202,43 @@ public class Panel extends JPanel implements ActionListener{
         firstInit = false;
     }
 
+    public void initMoveBlock(Graphics g, int i, int j) {
+        Color tempColor;
+        int startXPos=0,startYPos=0,endXPos=0,endYPos=0;
+        if (i>0) startXPos = i-1;
+        else startXPos = i;
+        if (j>0) startYPos = j-1;
+        else startYPos = j;
+        if (i<cell_size-1) endXPos = i+1;
+        else endXPos = i;
+        if (j<cell_size-1) endYPos = j+1;
+        else endYPos = j;
+
+        for (int t=startXPos;t<=endXPos;t++) {
+            for (int k=startYPos;k<=endYPos;k++) {
+
+                switch (field[t][k]) {
+                    case 1:
+                        tempColor = Color.BLACK;
+                        break;
+                    case 2:
+                        tempColor = Color.RED;
+                        break;
+                    case 3:
+                        tempColor = Color.GREEN;
+                        break;
+                    case 4:
+                        tempColor = Color.BLUE;
+                        break;
+                    default:
+                        tempColor = Color.WHITE;
+                }
+                drawBlock(t,k,g,tempColor);
+            }
+        }
+
+    }
+
     public void drawGrid(Graphics g) {
         int width = HEIGHT-header_height;
         int height = HEIGHT-header_height;
@@ -200,6 +248,37 @@ public class Panel extends JPanel implements ActionListener{
         for (int i=0;i<=cell_size;i++) {
             g.drawLine((WIDTH - width)/2,dh*i + header_height,WIDTH - (WIDTH - width)/2,dh*i + header_height);
             g.drawLine((WIDTH - width)/2 + dw*i,header_height,(WIDTH - width)/2 + dw*i,height + header_height);
+        }
+    }
+
+    public void drawGridMove(Graphics g, int i, int j) {
+        int width = HEIGHT-header_height;
+        int height = HEIGHT-header_height;
+        int dw = width/cell_size;
+        int dh = height/cell_size;
+        int dt=1;
+        g.setColor(Color.WHITE);
+
+        int startXPos=0,startYPos=0,endXPos=0,endYPos=0;
+        if (i>0) startXPos = i-1;
+        else startXPos = i;
+        if (j>0) startYPos = j-1;
+        else startYPos = j;
+        if (i<cell_size-1) endXPos = i+2;
+        else endXPos = i+1;
+        if (j<cell_size-1) endYPos = j+2;
+        else endYPos = j+1;
+
+        //if ((endXPos - startXPos)!=(endYPos - startYPos)) dt=0;
+
+        for (int t=startXPos;t<=endXPos;t++) {
+            //g.drawLine((WIDTH - width)/2 + dw*startXPos,dh*t + header_height,(WIDTH - width)/2 + dw*endXPos,dh*t + header_height);//горизонтальные линии
+            g.drawLine((WIDTH - width)/2 + dw*t,header_height + dh*startYPos,(WIDTH - width)/2 + dw*t,header_height + dh*endYPos);//вертикальные линии
+        }
+
+        for (int t=startYPos;t<=endYPos;t++) {
+            g.drawLine((WIDTH - width)/2 + dw*startXPos,dh*t + header_height,(WIDTH - width)/2 + dw*endXPos,dh*t + header_height);//горизонтальные линии
+            //g.drawLine((WIDTH - width)/2 + dw*t,header_height + dh*startYPos,(WIDTH - width)/2 + dw*t,header_height + dh*endYPos);//вертикальные линии
         }
     }
 

@@ -32,9 +32,9 @@ public class Listeners implements MouseListener, KeyListener, MouseMotionListene
 
             if (Panel.mouseX>(Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2 && Panel.mouseX<(Panel.getWIDTH() - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2)) {
 
-                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.getCell_size());
+                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
                 if (Panel.mouseY > Panel.getHeader_height()) {
-                    int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.getCell_size());
+                    int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
                     if (Panel.field[i][j] == 4) Panel.field[i][j] = 0;
                     else Panel.field[i][j]++;
                     //repaint();
@@ -85,11 +85,11 @@ public class Listeners implements MouseListener, KeyListener, MouseMotionListene
             Panel.mouseX = e.getX();
             Panel.mouseY = e.getY();
 
-            if (Panel.mouseX>(Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2 && Panel.mouseX<(Panel.getWIDTH() - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2)) {
+            if (Panel.mouseX>(Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2 && Panel.mouseX<(Panel.getWIDTH() - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2) && Panel.state.equals(Panel.STATES.PLAY)) {
 
-                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.getCell_size());
+                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
                 if (Panel.mouseY > Panel.getHeader_height()) {
-                    int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.getCell_size());
+                    int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
                     if (Panel.field[i][j] == 4) Panel.field[i][j] = 0;
                     else Panel.field[i][j]++;
                     //repaint();
@@ -102,6 +102,35 @@ public class Listeners implements MouseListener, KeyListener, MouseMotionListene
                     //repaint();
 
                 }
+
+            } else if (Panel.mouseX>(Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2 && Panel.mouseX<(Panel.getWIDTH() - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2) && Panel.mouseY > Panel.getHeader_height()) {
+//                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
+//                int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
+//                if (Panel.field[i][j]<2) {
+//                    //Panel.await_cond = false;
+                    Panel.state = Panel.STATES.PLAY;
+                    System.out.println("Выход из состояния движения");
+//                }
+            }
+        }
+
+        if (e.getButton() == MouseEvent.BUTTON3) { //проверка на нажатие правой кнопки мыши  && e.getID()==MouseEvent.MOUSE_PRESSED
+            Panel.mouseX = e.getX();
+            Panel.mouseY = e.getY();
+
+            System.out.println("Правый клик мыши!");
+
+            if (Panel.mouseX>(Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2 && Panel.mouseX<(Panel.getWIDTH() - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height()))/2) && Panel.mouseY > Panel.getHeader_height() && Panel.state.equals(Panel.STATES.PLAY)) {
+
+                //Panel.await_cond = true;
+                Panel.state = Panel.STATES.MOVE;
+                System.out.println("Состояние движения");
+
+                int i = (int) ((float) (Panel.mouseX - (Panel.getWIDTH() - (Panel.getHEIGHT() - Panel.getHeader_height())) / 2) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
+                int j = (int) ((float) (Panel.mouseY - Panel.getHeader_height()) / (Panel.getHEIGHT() - Panel.getHeader_height()) * Panel.cell_size);
+
+                Panel.actionX = i;
+                Panel.actionY = j;
 
             }
         }
