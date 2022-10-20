@@ -22,8 +22,8 @@ public class Player {
     private Image img;
 
     private Player() {
-        x = Panel.mouseX;
-        y = Panel.mouseY;
+        x = 0;
+        y = 0;
         w = 82;
         h = 100;
         Image image = new ImageIcon("image/cursor_2.png").getImage();
@@ -126,8 +126,8 @@ public class Player {
     public void update() {
 
         if (mouse_moved) {
-            x = Panel.mouseX;
-            y = Panel.mouseY;
+            x = Panel.getInstance().getMouseX();
+            y = Panel.getInstance().getMouseY();
         }
 
         if (up && y>0) {
@@ -135,7 +135,7 @@ public class Player {
             mouse_moved = false;
         }
 
-        if (down && y<Panel.getHEIGHT()-h) {
+        if (down && y<Panel.getInstance().getHEIGHT()-h) {
             y+=speed;
             mouse_moved = false;
         }
@@ -145,7 +145,7 @@ public class Player {
             mouse_moved = false;
         }
 
-        if (right && x<Panel.getWIDTH()-w) {
+        if (right && x<Panel.getInstance().getWIDTH()-w) {
             x+=speed;
             mouse_moved = false;
         }

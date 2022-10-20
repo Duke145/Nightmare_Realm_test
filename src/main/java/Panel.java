@@ -12,62 +12,187 @@ import java.util.Map;
 
 public class Panel extends JPanel implements ActionListener{
 
-    public static int getHeader_height() {
+    private static Panel instance;
+
+    private Panel() {
+        super();
+
+        WIDTH = Main.getScreen_width();
+        HEIGHT = Main.getScreen_height()-header_height;
+        player = Player.getInstance();
+
+        image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB); //создаем объект буфера для хранения картинок
+        g = (Graphics2D) image.getGraphics(); // графическому объекту присвоим элемент из буфера
+
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK);//включает получение событий от мыши
+        addMouseListener(new Listeners());
+        addKeyListener(new Listeners());
+        addMouseMotionListener(new Listeners());
+        setFocusable(true); //передает фокус
+        //requestFocus(); //активирует фокус
+    }
+
+    public static Panel getInstance() {
+        if (instance == null) {
+            instance = new Panel();
+        }
+
+        return instance;
+    }
+
+    private int cell_size = 5;
+
+    private int header_height = 100; //размер блока сверху
+    private int[][] field = new int[cell_size][cell_size]; //массив поля
+    //public static ArrayList<Integer> headerField = new ArrayList<>();
+    private HashMap<Integer,Integer> headerField = new HashMap<>();
+    private boolean firstInit = true;
+
+    private Timer mainTimer = new Timer(17,this); //главный таймер, вызывает метод actionPerformed каждые 30 миллисекунд
+
+    public enum STATES{MENU,PLAY,MOVE} //объявляем 2 состояния игры
+    private STATES state = STATES.PLAY; //задает изначальное состояние - меню
+
+
+    //размер панели
+    private int WIDTH;
+    private int HEIGHT;
+
+    //координаты мышки
+    private int mouseX;
+    private int mouseY;
+
+    //координаты ходящей фишки
+    private int actionX;
+    private int actionY;
+
+    private BufferedImage image;
+
+    public int getCell_size() {
+        return cell_size;
+    }
+
+    public void setCell_size(int cell_size) {
+        this.cell_size = cell_size;
+    }
+
+    public int getHeader_height() {
         return header_height;
     }
 
-    public static int cell_size = 5;
+    public void setHeader_height(int header_height) {
+        this.header_height = header_height;
+    }
 
+    public int[][] getField() {
+        return field;
+    }
 
-    public static HashMap<Integer, Integer> getHeaderField() {
+    public void setField(int i, int j, int value) {
+        field[i][j] = value;
+    }
+
+    public HashMap<Integer, Integer> getHeaderField() {
         return headerField;
     }
 
-    //public static Boolean await_cond = false;
+    public void setHeaderField(Integer i, Integer value) {
+        headerField.put(i,value);
+    }
 
-    public static boolean isFirstInit() {
+    public boolean isFirstInit() {
         return firstInit;
     }
 
+    public void setFirstInit(boolean firstInit) {
+        this.firstInit = firstInit;
+    }
 
+    public Timer getMainTimer() {
+        return mainTimer;
+    }
 
-    private static int header_height = 100; //размер блока сверху
-    public static int[][] field = new int[cell_size][cell_size]; //массив поля
-    //public static ArrayList<Integer> headerField = new ArrayList<>();
-    public static HashMap<Integer,Integer> headerField = new HashMap<>();
-    private static boolean firstInit = true;
+    public void setMainTimer(Timer mainTimer) {
+        this.mainTimer = mainTimer;
+    }
 
-    public Timer mainTimer = new Timer(17,this); //главный таймер, вызывает метод actionPerformed каждые 30 миллисекунд
+    public STATES getState() {
+        return state;
+    }
 
-    public enum STATES{MENU,PLAY,MOVE} //объявляем 2 состояния игры
-    public static STATES state = STATES.PLAY; //задает изначальное состояние - меню
+    public void setState(STATES state) {
+        this.state = state;
+    }
 
-    public static int getWIDTH() {
+    public int getWIDTH() {
         return WIDTH;
     }
 
-    public static int getHEIGHT() {
+    public void setWIDTH(int WIDTH) {
+        this.WIDTH = WIDTH;
+    }
+
+    public int getHEIGHT() {
         return HEIGHT;
     }
 
-    //размер панели
-    private static int WIDTH;
-    private static int HEIGHT;
+    public void setHEIGHT(int HEIGHT) {
+        this.HEIGHT = HEIGHT;
+    }
 
-    //координаты мышки
-    public static int mouseX;
-    public static int mouseY;
+    public int getMouseX() {
+        return mouseX;
+    }
 
-    //координаты ходящей фишки
-    public static int actionX;
-    public static int actionY;
+    public void setMouseX(int mouseX) {
+        this.mouseX = mouseX;
+    }
 
-    private BufferedImage image;
+    public int getMouseY() {
+        return mouseY;
+    }
+
+    public void setMouseY(int mouseY) {
+        this.mouseY = mouseY;
+    }
+
+    public int getActionX() {
+        return actionX;
+    }
+
+    public void setActionX(int actionX) {
+        this.actionX = actionX;
+    }
+
+    public int getActionY() {
+        return actionY;
+    }
+
+    public void setActionY(int actionY) {
+        this.actionY = actionY;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    public Graphics2D getG() {
+        return g;
+    }
+
+    public void setG(Graphics2D g) {
+        this.g = g;
+    }
+
     private Graphics2D g;
 
     Back back = new Back();
 
-    Player player = Player.getInstance();
+    private Player player;
 
 
 
@@ -101,26 +226,6 @@ public class Panel extends JPanel implements ActionListener{
         }
 
     }
-
-
-    public Panel(int WIDTH, int HEIGHT) {
-        super();
-
-        Panel.WIDTH = WIDTH;
-        Panel.HEIGHT = HEIGHT;
-
-
-        image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB); //создаем объект буфера для хранения картинок
-        g = (Graphics2D) image.getGraphics(); // графическому объекту присвоим элемент из буфера
-
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);//включает получение событий от мыши
-        addMouseListener(new Listeners());
-        addKeyListener(new Listeners());
-        addMouseMotionListener(new Listeners());
-        setFocusable(true); //передает фокус
-        //requestFocus(); //активирует фокус
-    }
-
 
 
     public void gameRender() {
