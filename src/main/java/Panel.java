@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Panel extends JPanel implements ActionListener{
+    public enum STATES{MENU,PLAY,MOVE,INIT} //объявляем состояния игры
+
+    private STATES state = STATES.INIT; //задает изначальное состояние
 
     private static Panel instance;
 
@@ -30,6 +33,7 @@ public class Panel extends JPanel implements ActionListener{
         addMouseMotionListener(new Listeners());
         setFocusable(true); //передает фокус
         //requestFocus(); //активирует фокус
+
     }
 
     public static Panel getInstance() {
@@ -48,10 +52,10 @@ public class Panel extends JPanel implements ActionListener{
     private HashMap<Integer,Integer> headerField = new HashMap<>();
     private boolean firstInit = true;
 
-    private Timer mainTimer = new Timer(17,this); //главный таймер, вызывает метод actionPerformed каждые 30 миллисекунд
+    private Timer mainTimer = new Timer(17,this); //главный таймер, вызывает метод actionPerformed каждые 17 миллисекунд
 
-    public enum STATES{MENU,PLAY,MOVE} //объявляем 2 состояния игры
-    private STATES state = STATES.PLAY; //задает изначальное состояние - меню
+
+
 
 
     //размер панели
@@ -202,7 +206,22 @@ public class Panel extends JPanel implements ActionListener{
 
         }
 
+        if (state.equals(STATES.INIT)) {
+            ((JLabel)((JPanel)MainPanel.getInstance().getComponent(0)).getComponent(0)).setText("INIT MODE ON");
+            gameUpdate();
+            //gameRender(); //добавление фона в буфер картинок
+            back.draw(g);
+            drawGrid(g); //отрисовка основного поля в буфер картинок
+            initHeader(g); // отрисовка заголовка с квадратами в буфер картинок
+            initMainBlock(g); // отрисовка фишек в буфер картинок
+            player.draw(g);
+            gameDraw(); // отрисовка всех элементов из буфера
+
+
+        }
+
         if (state.equals(STATES.PLAY)) {
+            ((JLabel)((JPanel)MainPanel.getInstance().getComponent(0)).getComponent(0)).setText("PLAY MODE ON");
             gameUpdate();
             //gameRender(); //добавление фона в буфер картинок
             back.draw(g);
@@ -338,7 +357,8 @@ public class Panel extends JPanel implements ActionListener{
                     default:
                         tempColor = Color.WHITE;
                 }
-                drawBlock(t,k,g,tempColor);
+                if (field[t][k]==0 && !(Math.abs(i - t)==1 && Math.abs(j - k)==1)) drawBlock(t,k,g,Color.WHITE);//отрисовка недиагональных ближайших свободных клеток
+                if (i==t && k==j) drawBlock(t,k,g,tempColor);// отрисовка фишки, которую нужно передвинуть
             }
         }
 
