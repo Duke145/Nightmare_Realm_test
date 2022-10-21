@@ -241,12 +241,7 @@ public class Panel extends JPanel implements ActionListener{
             gameDraw(); // отрисовка всех элементов из буфера
 
 
-            //Проверка на конец игры
-            if (sum1==cell_size && sum2==cell_size && sum3==cell_size) {
-                JOptionPane.showMessageDialog(null, "Game over.\n"+
-                        "Congratulations!");
-                state = STATES.INIT;
-            }
+
 
             //проверка на начальные условия
             int counter_red=0;
@@ -296,6 +291,10 @@ public class Panel extends JPanel implements ActionListener{
                         "blocked cells can only be in the 2nd and 4th column\n" +
                         "There cannot be 5 blocked cells in one column\n" +
                         "headers should be different colors");
+                state = STATES.INIT;
+            } else if (sum1==cell_size && sum2==cell_size && sum3==cell_size) {//Проверка на конец игры
+                JOptionPane.showMessageDialog(null, "Game over.\n"+
+                        "Congratulations!");
                 state = STATES.INIT;
             }
         }
