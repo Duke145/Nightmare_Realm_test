@@ -1,10 +1,5 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 public class Back {
     Image image = new ImageIcon("image/fon1.jpg").getImage();//загрузка картинки
 
